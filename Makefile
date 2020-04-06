@@ -4,7 +4,7 @@ build:
 
 .PHONY: run
 run: build
-	@./bin/check-newline-in-imports
+	@./bin/check-newline-in-imports -n=$(MAX_NEW_LINE) -f=$(FILE_PATH)
 
 .PHONY: init
 init:
