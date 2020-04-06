@@ -17,13 +17,13 @@ init:
 .PHONY: test
 test:
 	@which gotest 2>/dev/null || go get -v github.com/rakyll/gotest
-	@gotest -v -cover --race $$(go list ./... | grep -v vendor)
+	@gotest -v -cover --race $$(go list ./... | grep -v vendor | grep -v cmd)
 
 .PHONY: test-cover
 test-cover:
 	@echo "=== Compiling Test Coverage... Please Wait... ==="
 	@which gotest 2>/dev/null || go get -v github.com/rakyll/gotest
-	@gotest -gcflags="-l" -v -coverpkg=./... -coverprofile=coverage.out $$(go list ./... | grep -v vendor | grep -v proto | grep -v cmd) > /dev/null
+	@gotest -gcflags="-l" -v -coverpkg=./... -coverprofile=coverage.out $$(go list ./... | grep -v vendor | grep -v cmd) > /dev/null
 	@echo "=== Reporting Coverate Result ==="
 	@go tool cover -func=coverage.out > coverage-report.out
 	@cat coverage-report.out

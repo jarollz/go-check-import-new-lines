@@ -5,11 +5,25 @@ import (
 	"github.com/stretchr/testify/assert"
 	"os"
 	"path"
+	"regexp"
 	"strings"
 	"testing"
 )
 
 func TestNew(t *testing.T) {
+	openerRegex, err := regexp.Compile(openerPattern)
+	if err != nil {
+		t.Fatal(err)
+	}
+	closerRegex, err := regexp.Compile(closerPattern)
+	if err != nil {
+		t.Fatal(err)
+	}
+	lineRegex, err := regexp.Compile(linePattern)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	type args struct {
 		maxNewLine int32
 		filePath   string
@@ -54,10 +68,9 @@ func TestNew(t *testing.T) {
 				}
 				assert.Equal(t, tt.args.maxNewLine, got.MaxNewLine)
 				assert.Equal(t, tt.args.filePath, got.FilePath)
-				assert.NotNil(t, got.regexCompile)
-				assert.NotNil(t, got.openerRegex)
-				assert.NotNil(t, got.closerRegex)
-				assert.NotNil(t, got.lineRegex)
+				assert.Equal(t, openerRegex, got.openerRegex)
+				assert.Equal(t, closerRegex, got.closerRegex)
+				assert.Equal(t, lineRegex, got.lineRegex)
 				assert.NotNil(t, got.readSourceCodeFromFile)
 				assert.NotNil(t, got.countImportNewLines)
 			} else {

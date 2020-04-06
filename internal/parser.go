@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"regexp"
 	"strings"
 )
@@ -12,7 +11,6 @@ import (
 type Parser struct {
 	MaxNewLine             int32
 	FilePath               string
-	regexCompile           func(pattern string) *regexp.Regexp
 	openerRegex            *regexp.Regexp
 	closerRegex            *regexp.Regexp
 	lineRegex              *regexp.Regexp
@@ -21,6 +19,12 @@ type Parser struct {
 }
 
 type stringProcessor func(string) string
+
+const (
+	openerPattern = `^import \($`
+	closerPattern = `^\)$`
+	linePattern   = `^\s*$`
+)
 
 func New(maxNewLine int32, filePath string) (*Parser, error) {
 	if maxNewLine < 0 {
@@ -31,14 +35,13 @@ func New(maxNewLine int32, filePath string) (*Parser, error) {
 	}
 
 	p := &Parser{
-		MaxNewLine:   maxNewLine,
-		FilePath:     filePath,
-		regexCompile: regexCompileWrapper,
+		MaxNewLine: maxNewLine,
+		FilePath:   filePath,
 	}
 
-	p.openerRegex = p.regexCompile(`^import \($`)
-	p.closerRegex = p.regexCompile(`^\)$`)
-	p.lineRegex = p.regexCompile(`^\s*$`)
+	p.openerRegex, _ = regexp.Compile(openerPattern)
+	p.closerRegex, _ = regexp.Compile(closerPattern)
+	p.lineRegex, _ = regexp.Compile(linePattern)
 	p.readSourceCodeFromFile = p.ReadSourceCodeFromFile
 	p.countImportNewLines = p.CountImportNewLines
 
@@ -105,12 +108,4 @@ func processString(input string, processors []stringProcessor) string {
 		output = p(output)
 	}
 	return output
-}
-
-func regexCompileWrapper(pattern string) *regexp.Regexp {
-	rgx, err := regexp.Compile(pattern)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return rgx
 }
