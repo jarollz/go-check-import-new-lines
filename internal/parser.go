@@ -55,7 +55,7 @@ func (p *Parser) ValidateImportsNewLines() error {
 	}
 	srcImportsLineCount := p.countImportNewLines(src)
 	if srcImportsLineCount > p.MaxNewLine {
-		return errors.New(fmt.Sprintf("extra new lines in imports, got %d messy new lines (max %d)", srcImportsLineCount, p.MaxNewLine))
+		return errors.New(fmt.Sprintf("[%s] extra new lines in imports, got %d messy new lines (max %d)", p.FilePath, srcImportsLineCount, p.MaxNewLine))
 	}
 	return nil
 }

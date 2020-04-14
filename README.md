@@ -17,7 +17,7 @@ This tool is to check whether there're new line in imports.
   `check-newline-in-imports -n=2 -f=/home/user/source_code.go`
 
 * In common golang source tree
-  `check-newline-in-imports -f="$( go list ./... | grep -v vendor | grep -P '^.+\.go$' )"`
+  `check-newline-in-imports -f="$(git diff HEAD --name-only | grep -P '.+\.go$')"`
 
 If there're more new lines than expected, a message will be printed to `STDERR` and program will exit with code 1. Otherwise, nothing will be printed to screen and program will exit with code 0.
 
